@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b0d10;color:#e6e8eb;font-family:Geist,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#e6e8eb;text-decoration:none}a:hover{color:oklch(0.8 0.13 75)}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;font-size:14px">
+  <header style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:18px 32px;border-bottom:1px solid #1c2027">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:22px;height:22px;background:oklch(0.8 0.13 75);border-radius:50%;box-shadow:inset 0 0 0 5px #0b0d10, 0 0 0 1px oklch(0.8 0.13 75)"></div>
+      <span style="font-weight:600;font-size:16px;letter-spacing:-0.01em">Orbzet</span>
+    </div>
+    <nav style="display:flex;gap:20px;flex-wrap:wrap;color:#8a919c;font-size:13px">
+      <a href="#how" style="color:#8a919c">How it works</a>
+      <a href="#tools" style="color:#8a919c">Tools</a>
+      <a href="#robinhood" style="color:#8a919c">Robinhood Chain</a>
+      <a href="Orbzet Exchanges.dc.html" style="color:#8a919c">Exchanges</a>
+    </nav>
+    <a href="Orbzet Overview.dc.html" style="margin-left:auto;padding:8px 14px;border-radius:7px;background:oklch(0.8 0.13 75);color:#0b0d10;font-weight:600;font-size:13px">Open app</a>
+  </header>
+
+  <section style="padding:88px 32px 64px;display:flex;flex-direction:column;align-items:flex-start;gap:22px;max-width:1120px;width:100%;box-sizing:border-box;margin:0 auto">
+    <div style="display:flex;align-items:center;gap:8px;font-family:'Geist Mono',monospace;font-size:12px;color:#8a919c;border:1px solid #232831;border-radius:999px;padding:5px 12px">
+      <span style="width:7px;height:7px;border-radius:50%;background:oklch(0.78 0.14 155)"></span>
+      <span>Now tracking Robinhood Chain</span>
+    </div>
+    <h1 style="margin:0;font-size:clamp(40px,6.4vw,76px);line-height:1;font-weight:600;letter-spacing:-0.04em;max-width:900px;text-wrap:balance">Find the gap before it closes.</h1>
+    <p style="margin:0;font-size:18px;line-height:1.5;color:#8a919c;max-width:580px;text-wrap:pretty">Orbzet scans funding rates and prices across 35 exchanges and Robinhood Chain, then ranks every delta-neutral trade by what it actually pays.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a href="Orbzet Scanner.dc.html" style="padding:12px 20px;border-radius:8px;background:oklch(0.8 0.13 75);color:#0b0d10;font-weight:600">Open the scanner</a>
+      <a href="Orbzet Backtest.dc.html" style="padding:12px 20px;border-radius:8px;border:1px solid #2a303a;color:#e6e8eb">Backtest a pair</a>
+    </div>
+  </section>
+
+  <section style="max-width:1120px;width:100%;box-sizing:border-box;margin:0 auto;padding:0 32px 88px">
+    <div style="border:1px solid #1c2027;border-radius:12px;overflow:hidden;background:#0f1216">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:12px 20px;border-bottom:1px solid #1c2027;font-size:12px;color:#7d848f">
+        <span>Top opportunities right now</span>
+        <span style="font-family:'Geist Mono',monospace">{{ clock }} UTC</span>
+      </div>
+      <sc-for list="{{ live }}" as="r" hint-placeholder-count="5">
+        <div style="display:grid;grid-template-columns:minmax(70px,0.6fr) minmax(0,1.6fr) minmax(80px,0.6fr);gap:14px;align-items:center;padding:13px 20px;border-bottom:1px solid #14171c">
+          <span style="font-weight:600">{{ r.sym }}</span>
+          <div style="display:flex;gap:6px;font-size:13px;white-space:nowrap;overflow:hidden">
+            <span style="color:oklch(0.78 0.14 155)">{{ r.longEx }}</span><span style="color:#5f6672">→</span><span style="color:oklch(0.76 0.14 25)">{{ r.shortEx }}</span>
+          </div>
+          <span style="text-align:right;font-family:'Geist Mono',monospace;color:oklch(0.8 0.13 75)">{{ r.apr }}</span>
+        </div>
+      </sc-for>
+      <a href="Orbzet Scanner.dc.html" style="display:block;padding:12px 20px;font-size:13px;color:#8a919c">See all opportunities →</a>
+    </div>
+  </section>
+
+  <section id="how" style="border-top:1px solid #1c2027">
+    <div style="max-width:1120px;margin:0 auto;padding:72px 32px;display:flex;flex-direction:column;gap:36px;box-sizing:border-box">
+      <h2 style="margin:0;font-size:32px;font-weight:600;letter-spacing:-0.025em">How it works</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-family:'Geist Mono',monospace;color:oklch(0.8 0.13 75);font-size:13px">01</span>
+          <span style="font-size:18px;font-weight:600">Scan</span>
+          <span style="color:#8a919c;line-height:1.55">Funding, bid and ask for every market on 35 venues, refreshed continuously.</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-family:'Geist Mono',monospace;color:oklch(0.8 0.13 75);font-size:13px">02</span>
+          <span style="font-size:18px;font-weight:600">Rank</span>
+          <span style="color:#8a919c;line-height:1.55">Each coin's best long/short pair, ranked by spread, APR, or net after fees.</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-family:'Geist Mono',monospace;color:oklch(0.8 0.13 75);font-size:13px">03</span>
+          <span style="font-size:18px;font-weight:600">Verify</span>
+          <span style="color:#8a919c;line-height:1.55">Backtest the pair on historical funding before you put size on it.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools" style="border-top:1px solid #1c2027">
+    <div style="max-width:1120px;margin:0 auto;padding:72px 32px;display:flex;flex-direction:column;gap:28px;box-sizing:border-box">
+      <h2 style="margin:0;font-size:32px;font-weight:600;letter-spacing:-0.025em">Tools</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:#1c2027;border:1px solid #1c2027;border-radius:12px;overflow:hidden">
+        <a href="Orbzet Scanner.dc.html" style="background:#0b0d10;padding:24px;display:flex;flex-direction:column;gap:8px" style-hover="background:#0f1216">
+          <span style="font-weight:600;font-size:16px">Funding Rates</span><span style="color:#8a919c;line-height:1.5">Spread for every coin, with a heatmap of rates across all venues.</span>
+        </a>
+        <a href="Orbzet Price Spread.dc.html" style="background:#0b0d10;padding:24px;display:flex;flex-direction:column;gap:8px" style-hover="background:#0f1216">
+          <span style="font-weight:600;font-size:16px">Price Spread</span><span style="color:#8a919c;line-height:1.5">Buy cheapest, sell richest, with order book depth.</span>
+        </a>
+        <a href="Orbzet Funding Price.dc.html" style="background:#0b0d10;padding:24px;display:flex;flex-direction:column;gap:8px" style-hover="background:#0f1216">
+          <span style="font-weight:600;font-size:16px">Funding / Price</span><span style="color:#8a919c;line-height:1.5">Net return after entry price and fees, for your hold period.</span>
+        </a>
+        <a href="Orbzet Backtest.dc.html" style="background:#0b0d10;padding:24px;display:flex;flex-direction:column;gap:8px" style-hover="background:#0f1216">
+          <span style="font-weight:600;font-size:16px">Backtest</span><span style="color:#8a919c;line-height:1.5">Daily and cumulative P&amp;L, win days and drawdown for any pair.</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="robinhood" style="border-top:1px solid #1c2027">
+    <div style="max-width:1120px;margin:0 auto;padding:72px 32px;display:flex;flex-wrap:wrap;gap:40px;align-items:center;box-sizing:border-box">
+      <div style="flex:1 1 420px;display:flex;flex-direction:column;gap:16px">
+        <span style="color:oklch(0.8 0.13 75);font-family:'Geist Mono',monospace;font-size:13px">ROBINHOOD CHAIN</span>
+        <h2 style="margin:0;font-size:32px;font-weight:600;letter-spacing:-0.025em;text-wrap:balance">Stock tokens, priced against the market.</h2>
+        <p style="margin:0;color:#8a919c;line-height:1.6;max-width:520px;text-wrap:pretty">Compare Lighter and Arcus funding with Hyperliquid, Binance and Bybit. Track the gap between stock token spot prices on Uniswap and their on-chain perps.</p>
+        <a href="Orbzet Overview.dc.html" style="color:oklch(0.8 0.13 75)">Open Robinhood Chain overview →</a>
+      </div>
+      <div style="flex:1 1 320px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#1c2027;border:1px solid #1c2027;border-radius:12px;overflow:hidden">
+        <sc-for list="{{ rh }}" as="t" hint-placeholder-count="4">
+          <div style="background:#0f1216;padding:18px;display:flex;flex-direction:column;gap:6px">
+            <span style="font-weight:600">{{ t.sym }}</span>
+            <span style="font-family:'Geist Mono',monospace;font-size:18px;color:{{ t.color }}">{{ t.basis }}</span>
+            <span style="color:#7d848f;font-size:12px">spot vs perp basis</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section style="border-top:1px solid #1c2027">
+    <div style="max-width:1120px;margin:0 auto;padding:80px 32px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;justify-content:space-between;box-sizing:border-box">
+      <h2 style="margin:0;font-size:clamp(28px,4vw,44px);font-weight:600;letter-spacing:-0.03em">Start scanning.</h2>
+      <a href="Orbzet Overview.dc.html" style="padding:13px 22px;border-radius:8px;background:oklch(0.8 0.13 75);color:#0b0d10;font-weight:600">Open app</a>
+    </div>
+  </section>
+
+  <footer style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:16px 32px;border-top:1px solid #1c2027;color:#5f6672;font-size:12px">
+    <span>© Orbzet</span>
+    <span>Not financial advice. Data shown is simulated.</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { now: Date.now(), tick: 0 };
+  componentDidMount() { this.t = setInterval(() => this.setState(s => ({ now: Date.now(), tick: s.tick + 1 })), 2000); }
+  componentWillUnmount() { clearInterval(this.t); }
+  renderVals() {
+    const k = this.state.tick, w = (b, i) => b + Math.sin(k * 0.7 + i * 1.3) * b * 0.06;
+    const base = [['HYPE','Hyperliquid','MEXC',84.2],['TSLA','Arcus','Binance',61.7],['PEPE','Bybit','Gate.io',53.9],['SOL','Lighter RH','Bitget',38.4],['NVDA','Lighter RH','Hyperliquid',31.0]];
+    const bas = [['TSLA',0.31],['NVDA',-0.18],['HOOD',0.24],['SPY',0.07]];
+    return {
+      clock: new Date(this.state.now).toISOString().slice(11, 19),
+      live: base.map(([sym, longEx, shortEx, a], i) => ({ sym, longEx, shortEx, apr: w(a, i).toFixed(1) + '% APR' })),
+      rh: bas.map(([sym, b], i) => { const v = w(b, i); return { sym, basis: (v >= 0 ? '+' : '') + v.toFixed(2) + '%', color: Math.abs(v) > 0.2 ? 'oklch(0.8 0.13 75)' : '#c4c8ce' }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

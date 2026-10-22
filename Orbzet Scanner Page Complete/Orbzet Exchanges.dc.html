@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b0d10;color:#e6e8eb;font-family:Geist,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#e6e8eb;text-decoration:none}a:hover{color:oklch(0.8 0.13 75)}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;font-size:13px">
+  <header style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;padding:14px 24px;border-bottom:1px solid #1c2027">
+    <a href="Orbzet Landing.dc.html" style="display:flex;align-items:center;gap:10px">
+      <div style="width:22px;height:22px;background:oklch(0.8 0.13 75);border-radius:50%;box-shadow:inset 0 0 0 5px #0b0d10, 0 0 0 1px oklch(0.8 0.13 75)"></div>
+      <span style="font-weight:600;font-size:15px;letter-spacing:-0.01em">Orbzet</span>
+    </a>
+    <nav style="display:flex;gap:4px;flex-wrap:wrap">
+      <a href="Orbzet Overview.dc.html" style="padding:6px 10px;border-radius:6px;color:#8a919c">Overview</a>
+      <a href="Orbzet Scanner.dc.html" style="padding:6px 10px;border-radius:6px;color:#8a919c">Funding Rates</a>
+      <a href="Orbzet Price Spread.dc.html" style="padding:6px 10px;border-radius:6px;color:#8a919c">Price Spread</a>
+      <a href="Orbzet Funding Price.dc.html" style="padding:6px 10px;border-radius:6px;color:#8a919c">Funding / Price</a>
+      <a href="Orbzet Backtest.dc.html" style="padding:6px 10px;border-radius:6px;color:#8a919c">Backtest</a>
+      <a href="Orbzet Exchanges.dc.html" style="padding:6px 10px;border-radius:6px;background:#161a20;color:#e6e8eb">Exchanges</a>
+    </nav>
+  </header>
+
+  <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:12px 24px;border-bottom:1px solid #1c2027">
+    <div style="display:flex;gap:2px;padding:2px;background:#111419;border:1px solid #1c2027;border-radius:7px">
+      <sc-for list="{{ types }}" as="m" hint-placeholder-count="3">
+        <button onClick="{{ m.onClick }}" style="border:0;cursor:pointer;padding:5px 12px;border-radius:5px;font:inherit;font-size:12px;background:{{ m.bg }};color:{{ m.color }}">{{ m.label }}</button>
+      </sc-for>
+    </div>
+    <div style="margin-left:auto;color:#7d848f;font-size:12px;font-family:'Geist Mono',monospace">{{ countTxt }}</div>
+  </div>
+
+  <div style="overflow-x:auto;flex:1">
+    <div style="min-width:760px">
+      <div style="display:grid;grid-template-columns:1.4fr 80px 120px 100px 110px 100px;gap:14px;padding:10px 24px;color:#7d848f;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid #1c2027">
+        <span>Exchange</span><span>Type</span><span>Chain</span><span style="text-align:right">Markets</span><span style="text-align:right">Funding every</span><span style="text-align:right">Status</span>
+      </div>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="20">
+        <div style="display:grid;grid-template-columns:1.4fr 80px 120px 100px 110px 100px;gap:14px;align-items:center;padding:9px 24px;border-bottom:1px solid #14171c" style-hover="background:#12161b">
+          <span style="font-weight:500">{{ r.name }}</span>
+          <span style="color:#8a919c;font-size:12px">{{ r.type }}</span>
+          <span style="color:{{ r.chainColor }};font-size:12px">{{ r.chain }}</span>
+          <span style="text-align:right;font-family:'Geist Mono',monospace;color:#c4c8ce">{{ r.markets }}</span>
+          <span style="text-align:right;font-family:'Geist Mono',monospace;color:#8a919c">{{ r.interval }}</span>
+          <div style="display:flex;justify-content:flex-end;align-items:center;gap:6px;font-size:12px;color:#8a919c">
+            <span style="width:6px;height:6px;border-radius:50%;background:{{ r.dot }}"></span><span>{{ r.status }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { type: 'All' };
+  DATA = [
+    ['Binance','CEX','—',412,'8h'],['Bybit','CEX','—',398,'8h'],['MEXC','CEX','—',612,'8h'],['Bitget','CEX','—',521,'8h'],['Gate.io','CEX','—',588,'8h'],['Phemex','CEX','—',344,'8h'],['BingX','CEX','—',402,'8h'],['XT.com','CEX','—',366,'8h'],['WEEX','CEX','—',298,'8h'],['Zoomex','CEX','—',214,'8h'],['Ourbit','CEX','—',188,'8h'],['Pionex','CEX','—',176,'8h'],['KCEX','CEX','—',242,'8h'],
+    ['Hyperliquid','DEX','Hyperliquid L1',224,'1h'],['Lighter','DEX','Ethereum L2',118,'1h'],['Lighter RH','DEX','Robinhood Chain',46,'1h'],['Arcus','DEX','Robinhood Chain',38,'1h'],['AsterDEX','DEX','BNB Chain',196,'8h'],['Apex Omni','DEX','Multi',142,'1h'],['Variational','DEX','Arbitrum',88,'1h'],['Phoenix','DEX','Solana',34,'1h'],['Ondo Perps','DEX','Ethereum',22,'1h'],['Extended','DEX','Starknet',74,'1h'],['TxFlow','DEX','Multi',41,'1h'],['GMTrade','DEX','Solana',58,'1h'],['QFEX','DEX','Multi',30,'1h'],['edgeX','DEX','Ethereum L2',162,'4h'],['Trade.xyz','DEX','Hyperliquid L1',26,'1h'],['GRVT','DEX','zkSync',92,'8h'],['Pacifica','DEX','Solana',64,'1h'],['PopDEX','DEX','Multi',28,'1h'],['Paradex','DEX','Starknet',138,'1h'],['Entropy','DEX','Multi',24,'1h'],['Paragon','DEX','Multi',20,'1h'],['Rise','DEX','Rise',32,'1h']
+  ];
+  renderVals() {
+    const s = this.state, rh = 'oklch(0.8 0.13 75)';
+    const list = this.DATA.filter(d => s.type === 'All' || (s.type === 'Robinhood Chain' ? d[2] === 'Robinhood Chain' : d[1] === s.type));
+    return {
+      countTxt: `${list.length} venues`,
+      rows: list.map(([name, type, chain, markets, interval], i) => {
+        const degraded = name === 'Ourbit' || name === 'Entropy';
+        return { name, type, chain, markets: String(markets), interval, chainColor: chain === 'Robinhood Chain' ? rh : '#8a919c', status: degraded ? 'Delayed' : 'Live', dot: degraded ? 'oklch(0.8 0.13 75)' : 'oklch(0.78 0.14 155)' };
+      }),
+      types: ['All', 'CEX', 'DEX', 'Robinhood Chain'].map(m => ({ label: m, bg: s.type === m ? '#1f242c' : 'transparent', color: s.type === m ? '#e6e8eb' : '#8a919c', onClick: () => this.setState({ type: m }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>
