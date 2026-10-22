@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Cpath d=%27M46 8 A42 42 0 0 0 46 92 Z%27 fill=%27%23ccff00%27 transform=%27translate(-4 4)%27/%3E%3Cpath d=%27M54 8 A42 42 0 0 1 54 92 Z%27 fill=%27%23ccff00%27 transform=%27translate(4 -4)%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b2416;color:#eef7f0;font-family:Geist,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#eef7f0;text-decoration:none}a:hover{color:oklch(0.93 0.22 125)}
+*::-webkit-scrollbar{height:8px;width:8px}*::-webkit-scrollbar-thumb{background:#255a3a;border-radius:4px}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;font-size:13px">
+  <header style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;padding:14px 24px;border-bottom:1px solid #1d4a30">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px">
+      <svg width="22" height="22" viewBox="0 0 100 100"><path d="M46 8 A42 42 0 0 0 46 92 Z" fill="oklch(0.93 0.22 125)" transform="translate(-4 4)"></path><path d="M54 8 A42 42 0 0 1 54 92 Z" fill="oklch(0.93 0.22 125)" transform="translate(4 -4)"></path></svg>
+      <span style="font-weight:600;font-size:15px;letter-spacing:-0.01em">Orbzet</span>
+    </a>
+    <nav style="display:flex;gap:4px;flex-wrap:wrap">
+      <a href="overview.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Overview</a>
+      <a href="funding.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Funding Rates</a>
+      <a href="price-spread.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Price Spread</a>
+      <a href="funding-price.html" style="padding:6px 10px;border-radius:6px;background:#173d27;color:#eef7f0">Funding / Price</a>
+      <a href="backtest.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Backtest</a>
+      <a href="exchanges.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Exchanges</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;font-family:'Geist Mono',monospace;font-size:12px;color:#a3c6af">
+      <span style="width:7px;height:7px;border-radius:50%;background:oklch(0.78 0.14 155);box-shadow:0 0 0 3px oklch(0.78 0.14 155 / 0.18)"></span>
+      <span>LIVE · {{ clock }} UTC</span>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:12px 24px;border-bottom:1px solid #1d4a30">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="color:#93b9a1;font-size:12px">Hold period</span>
+      <div style="display:flex;gap:2px;padding:2px;background:#10301e;border:1px solid #1d4a30;border-radius:7px">
+        <sc-for list="{{ holds }}" as="h" hint-placeholder-count="4">
+          <button onClick="{{ h.onClick }}" style="border:0;cursor:pointer;padding:5px 12px;border-radius:5px;font:inherit;font-size:12px;background:{{ h.bg }};color:{{ h.color }}">{{ h.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <span style="color:#93b9a1;font-size:12px">Net = funding earned over hold + entry price edge − est. fees (0.10% round trip)</span>
+  </div>
+
+  <div style="overflow-x:auto;flex:1">
+    <div style="min-width:940px">
+      <div style="display:grid;grid-template-columns:28px 1fr 1.6fr 100px 100px 90px 110px;gap:14px;padding:10px 24px;color:#93b9a1;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid #1d4a30">
+        <span>#</span><span>Coin</span><span>Long → Short</span><span style="text-align:right">Funding / 8h</span><span style="text-align:right">Price edge</span><span style="text-align:right">Fees</span><span style="text-align:right">Net</span>
+      </div>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="14">
+        <div style="display:grid;grid-template-columns:28px 1fr 1.6fr 100px 100px 90px 110px;gap:14px;align-items:center;padding:9px 24px;border-bottom:1px solid #143823" style-hover="background:#133622">
+          <span style="color:#7aa58a;font-family:'Geist Mono',monospace;font-size:11px">{{ r.rank }}</span>
+          <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:600">{{ r.sym }}</span><span style="color:#93b9a1;font-size:11px">{{ r.kind }}</span></div>
+          <div style="display:flex;gap:6px;font-size:12px;white-space:nowrap;overflow:hidden">
+            <span style="color:oklch(0.78 0.14 155)">{{ r.longEx }}</span><span style="color:#7aa58a">→</span><span style="color:oklch(0.76 0.14 25)">{{ r.shortEx }}</span>
+          </div>
+          <span style="text-align:right;font-family:'Geist Mono',monospace;color:#d3e6d9">{{ r.funding }}</span>
+          <span style="text-align:right;font-family:'Geist Mono',monospace;color:{{ r.edgeColor }}">{{ r.edge }}</span>
+          <span style="text-align:right;font-family:'Geist Mono',monospace;color:#a3c6af">−0.100%</span>
+          <span style="text-align:right;font-family:'Geist Mono',monospace;font-weight:500;color:{{ r.netColor }}">{{ r.net }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <footer style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:12px 24px;border-top:1px solid #1d4a30;color:#7aa58a;font-size:11px">
+    <span>Positive price edge: the long leg is cheaper than the short leg at entry</span>
+    <span>Data is simulated for this mockup</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  EX = ['MEXC','Bitget','Gate.io','Hyperliquid','Lighter','Lighter RH','Arcus','Bybit','Binance','Paradex','edgeX','GRVT','AsterDEX','Extended','Variational'];
+  constructor(p) {
+    super(p);
+    let seed = 31; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const syms = [['BTC','Crypto'],['ETH','Crypto'],['SOL','Crypto'],['DOGE','Crypto'],['PEPE','Crypto'],['WIF','Crypto'],['SUI','Crypto'],['ENA','Crypto'],['HYPE','Crypto'],['TAO','Crypto'],['ONDO','Crypto'],['TSLA','RWA'],['NVDA','RWA'],['XAU','RWA'],['COIN','RWA'],['HOOD','RWA']];
+    const coins = syms.map(([sym, kind], id) => ({ id, sym, kind, f: this.EX.map(() => rnd() < 0.3 ? null : (rnd() - 0.4) * 0.08), p: this.EX.map(() => (rnd() - 0.5) * 0.3) }));
+    this.state = { coins, hold: 3, now: Date.now() };
+  }
+  componentDidMount() {
+    this.t = setInterval(() => this.setState(s => ({ now: Date.now(), coins: s.coins.map(c => Math.random() > 0.3 ? c : { ...c, f: c.f.map(v => v == null ? v : v + (Math.random() - 0.5) * 0.004), p: c.p.map(v => v + (Math.random() - 0.5) * 0.03) }) })), 1500);
+  }
+  componentWillUnmount() { clearInterval(this.t); }
+  pct(v, d = 3) { return (v >= 0 ? '+' : '') + v.toFixed(d) + '%'; }
+  renderVals() {
+    const s = this.state, accent = 'oklch(0.93 0.22 125)';
+    const periods = s.hold * 3;
+    const rows = s.coins.map(c => {
+      let best = null;
+      c.f.forEach((fl, i) => c.f.forEach((fs, j) => {
+        if (i === j || fl == null || fs == null) return;
+        const fund = fs - fl, edge = c.p[j] - c.p[i];
+        const net = fund * periods + edge - 0.1;
+        if (!best || net > best.net) best = { i, j, fund, edge, net };
+      }));
+      return { c, best };
+    }).sort((a, b) => b.best.net - a.best.net).map(({ c, best }, k) => ({
+      rank: String(k + 1).padStart(2, '0'), sym: c.sym, kind: c.kind, longEx: this.EX[best.i], shortEx: this.EX[best.j],
+      funding: this.pct(best.fund, 4), edge: this.pct(best.edge),
+      edgeColor: best.edge >= 0 ? 'oklch(0.78 0.14 155)' : 'oklch(0.76 0.14 25)',
+      net: this.pct(best.net, 2), netColor: best.net > 0 ? accent : '#a3c6af'
+    }));
+    return {
+      clock: new Date(s.now).toISOString().slice(11, 19), rows,
+      holds: [[1, '1 day'], [3, '3 days'], [7, '7 days'], [30, '30 days']].map(([v, l]) => ({ label: l, bg: s.hold === v ? '#215234' : 'transparent', color: s.hold === v ? '#eef7f0' : '#a3c6af', onClick: () => this.setState({ hold: v }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

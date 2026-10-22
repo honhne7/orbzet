@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Cpath d=%27M46 8 A42 42 0 0 0 46 92 Z%27 fill=%27%23ccff00%27 transform=%27translate(-4 4)%27/%3E%3Cpath d=%27M54 8 A42 42 0 0 1 54 92 Z%27 fill=%27%23ccff00%27 transform=%27translate(4 -4)%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b2416;color:#eef7f0;font-family:Geist,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#eef7f0;text-decoration:none}a:hover{color:oklch(0.93 0.22 125)}
+input{font:inherit}
+*::-webkit-scrollbar{height:8px;width:8px}*::-webkit-scrollbar-thumb{background:#255a3a;border-radius:4px}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;font-size:13px">
+  <header style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;padding:14px 24px;border-bottom:1px solid #1d4a30">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px">
+      <svg width="22" height="22" viewBox="0 0 100 100"><path d="M46 8 A42 42 0 0 0 46 92 Z" fill="oklch(0.93 0.22 125)" transform="translate(-4 4)"></path><path d="M54 8 A42 42 0 0 1 54 92 Z" fill="oklch(0.93 0.22 125)" transform="translate(4 -4)"></path></svg>
+      <span style="font-weight:600;font-size:15px;letter-spacing:-0.01em">Orbzet</span>
+    </a>
+    <nav style="display:flex;gap:4px;flex-wrap:wrap">
+      <a href="overview.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Overview</a>
+      <a href="funding.html" style="padding:6px 10px;border-radius:6px;background:#173d27;color:#eef7f0">Funding Rates</a>
+      <a href="price-spread.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Price Spread</a>
+      <a href="funding-price.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Funding / Price</a>
+      <a href="backtest.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Backtest</a>
+      <a href="exchanges.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Exchanges</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;font-family:'Geist Mono',monospace;font-size:12px;color:#a3c6af">
+      <span style="width:7px;height:7px;border-radius:50%;background:oklch(0.78 0.14 155);box-shadow:0 0 0 3px oklch(0.78 0.14 155 / 0.18)"></span>
+      <span>LIVE · 35 venues · {{ clock }} UTC</span>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:12px 24px;border-bottom:1px solid #1d4a30">
+    <div style="display:flex;gap:2px;padding:2px;background:#10301e;border:1px solid #1d4a30;border-radius:7px">
+      <sc-for list="{{ markets }}" as="m" hint-placeholder-count="3">
+        <button onClick="{{ m.onClick }}" style="border:0;cursor:pointer;padding:5px 12px;border-radius:5px;font:inherit;font-size:12px;background:{{ m.bg }};color:{{ m.color }}">{{ m.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="color:#93b9a1;font-size:12px">Min 24h vol</span>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        <sc-for list="{{ vols }}" as="v" hint-placeholder-count="5">
+          <button onClick="{{ v.onClick }}" style="cursor:pointer;padding:4px 9px;border-radius:5px;font-family:'Geist Mono',monospace;font-size:11px;border:1px solid {{ v.border }};background:transparent;color:{{ v.color }}">{{ v.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <input value="{{ q }}" onChange="{{ onQ }}" placeholder="Search coin" style="background:#10301e;border:1px solid #1d4a30;border-radius:6px;color:#eef7f0;padding:6px 10px;width:150px;outline:none;font-size:12px">
+    <div style="margin-left:auto;color:#93b9a1;font-size:12px;font-family:'Geist Mono',monospace">{{ countTxt }}</div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;flex:1;min-height:0">
+    <div style="flex:1 1 640px;min-width:0;overflow-x:auto">
+      <div style="min-width:{{ tableMin }}">
+        <div style="display:grid;grid-template-columns:{{ cols }};gap:14px;align-items:center;padding:10px 24px;color:#93b9a1;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid #1d4a30">
+          <span>#</span><span>Coin</span><span>Long → Short</span>
+          <span style="text-align:right;cursor:pointer" onClick="{{ sortSpread }}">{{ spreadHead }}</span>
+          <span style="text-align:right">Vol 24h</span>
+          <span style="text-align:right">Next pay</span>
+          <sc-if value="{{ showHeat }}" hint-placeholder-val="{{ true }}"><span>Funding across venues</span></sc-if>
+        </div>
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="14">
+          <div onClick="{{ r.onClick }}" style="display:grid;grid-template-columns:{{ cols }};gap:14px;align-items:center;padding:9px 24px;border-bottom:1px solid #143823;cursor:pointer;background:{{ r.bg }};box-shadow:{{ r.edge }}" style-hover="background:#133622">
+            <span style="color:#7aa58a;font-family:'Geist Mono',monospace;font-size:11px">{{ r.rank }}</span>
+            <div style="display:flex;align-items:baseline;gap:8px;min-width:0">
+              <span style="font-weight:600">{{ r.sym }}</span>
+              <span style="color:#93b9a1;font-size:11px">{{ r.kind }} · {{ r.n }}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;min-width:0;white-space:nowrap;overflow:hidden">
+              <span style="color:oklch(0.78 0.14 155)">{{ r.longEx }}</span>
+              <span style="color:#7aa58a">→</span>
+              <span style="color:oklch(0.76 0.14 25)">{{ r.shortEx }}</span>
+            </div>
+            <span style="text-align:right;font-family:'Geist Mono',monospace;font-weight:500;color:{{ r.flash }}">{{ r.headline }}</span>
+            <span style="text-align:right;font-family:'Geist Mono',monospace;color:#a3c6af">{{ r.vol }}</span>
+            <span style="text-align:right;font-family:'Geist Mono',monospace;color:#a3c6af">{{ r.next }}</span>
+            <sc-if value="{{ showHeat }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;gap:1px">
+                <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="35">
+                  <span title="{{ c.t }}" style="width:6px;height:18px;border-radius:1px;background:{{ c.bg }};outline:{{ c.ol }}"></span>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <aside style="flex:0 1 340px;min-width:280px;border-left:1px solid #1d4a30;padding:20px 24px;display:flex;flex-direction:column;gap:20px">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <span style="color:#93b9a1;font-size:11px;text-transform:uppercase;letter-spacing:0.06em">Selected pair</span>
+        <div style="display:flex;align-items:baseline;gap:10px">
+          <span style="font-size:24px;font-weight:600;letter-spacing:-0.02em">{{ sel.sym }}</span>
+          <span style="color:#93b9a1">{{ sel.kind }}</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#1d4a30;border:1px solid #1d4a30;border-radius:8px;overflow:hidden">
+        <div style="background:#0f2d1c;padding:12px;display:flex;flex-direction:column;gap:4px">
+          <span style="color:oklch(0.78 0.14 155);font-size:11px">LONG · {{ sel.longEx }}</span>
+          <span style="font-family:'Geist Mono',monospace;font-size:15px">{{ sel.longRate }}</span>
+        </div>
+        <div style="background:#0f2d1c;padding:12px;display:flex;flex-direction:column;gap:4px">
+          <span style="color:oklch(0.76 0.14 25);font-size:11px">SHORT · {{ sel.shortEx }}</span>
+          <span style="font-family:'Geist Mono',monospace;font-size:15px">{{ sel.shortRate }}</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between"><span style="color:#a3c6af">Spread / 8h</span><span style="font-family:'Geist Mono',monospace;color:oklch(0.93 0.22 125)">{{ sel.spread }}</span></div>
+        <div style="display:flex justify-content:space-between;display:flex"><span style="color:#a3c6af;flex:1">Annualized</span><span style="font-family:'Geist Mono',monospace">{{ sel.apr }}</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#a3c6af">Est. on $10K / day</span><span style="font-family:'Geist Mono',monospace">{{ sel.daily }}</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:#a3c6af">Next funding</span><span style="font-family:'Geist Mono',monospace">{{ sel.next }}</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="color:#93b9a1;font-size:11px;text-transform:uppercase;letter-spacing:0.06em">All venues</span>
+        <div style="display:flex;flex-direction:column;max-height:280px;overflow:auto">
+          <sc-for list="{{ sel.venues }}" as="x" hint-placeholder-count="8">
+            <div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #143823;font-size:12px">
+              <span style="color:#d3e6d9">{{ x.name }}</span>
+              <span style="font-family:'Geist Mono',monospace;color:{{ x.color }}">{{ x.rate }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <footer style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:12px 24px;border-top:1px solid #1d4a30;color:#7aa58a;font-size:11px">
+    <span>Orbzet — funding & spread arbitrage scanner</span>
+    <span>Data is simulated for this mockup</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showHeatmap&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;spreadUnit&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;8h&quot;,&quot;APR&quot;],&quot;default&quot;:&quot;8h&quot;,&quot;tsType&quot;:&quot;'8h'|'APR'&quot;}}">
+class Component extends DCLogic {
+  EX = ['MEXC','Bitget','Gate.io','Phemex','BingX','XT.com','WEEX','AsterDEX','Apex Omni','Variational','Zoomex','Ourbit','Pionex','Lighter','Phoenix','Ondo Perps','Hyperliquid','KCEX','Lighter RH','Extended','TxFlow','GMTrade','QFEX','edgeX','Bybit','Binance','Trade.xyz','GRVT','Arcus','Pacifica','PopDEX','Paradex','Entropy','Paragon','Rise'];
+  constructor(p) {
+    super(p);
+    const crypto = ['BTC','ETH','SOL','DOGE','XRP','PEPE','WIF','SUI','TIA','ENA','ARB','OP','APT','SEI','INJ','JUP','ONDO','TAO','HYPE','PENDLE','NEAR','LINK','AVAX','BONK'];
+    const rwa = ['XAU','TSLA','NVDA','SPY','AAPL','COIN'];
+    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const coins = [...crypto.map(s => ({ sym: s, kind: 'Crypto' })), ...rwa.map(s => ({ sym: s, kind: 'RWA' }))].map((c, i) => {
+      const bias = (rnd() - 0.4) * 0.04;
+      const rates = this.EX.map(() => rnd() < 0.25 ? null : bias + (rnd() - 0.5) * (0.02 + rnd() * 0.12));
+      return { ...c, id: i, rates, vol: Math.round(Math.pow(10, 4.5 + rnd() * 4.5)), mins: Math.floor(rnd() * 480) };
+    });
+    this.state = { coins, market: 'All', minVol: 0, q: '', sel: 0, asc: false, now: Date.now(), flash: {} };
+  }
+  componentDidMount() {
+    this.t = setInterval(() => this.setState(s => {
+      const flash = {};
+      const coins = s.coins.map(c => {
+        if (Math.random() > 0.3) return c;
+        flash[c.id] = Date.now();
+        return { ...c, rates: c.rates.map(r => r == null ? r : r + (Math.random() - 0.5) * 0.006) };
+      });
+      return { coins, flash, now: Date.now() };
+    }), 1500);
+  }
+  componentWillUnmount() { clearInterval(this.t); }
+  pct(v, d = 4) { return (v >= 0 ? '+' : '') + v.toFixed(d) + '%'; }
+  money(v) { return v >= 1e9 ? '$' + (v / 1e9).toFixed(1) + 'B' : v >= 1e6 ? '$' + (v / 1e6).toFixed(1) + 'M' : '$' + Math.round(v / 1e3) + 'K'; }
+  derive(c) {
+    let lo = Infinity, hi = -Infinity, li = -1, hiI = -1, n = 0;
+    c.rates.forEach((r, i) => { if (r == null) return; n++; if (r < lo) { lo = r; li = i; } if (r > hi) { hi = r; hiI = i; } });
+    return { lo, hi, li, hiI, n, spread: hi - lo };
+  }
+  heat(r, max) {
+    if (r == null) return '#143823';
+    const a = Math.min(1, Math.abs(r) / max);
+    return r >= 0 ? `oklch(${0.3 + a * 0.45} ${0.02 + a * 0.12} 25)` : `oklch(${0.3 + a * 0.45} ${0.02 + a * 0.12} 155)`;
+  }
+  renderVals() {
+    const s = this.state;
+    const showHeat = this.props.showHeatmap ?? true;
+    const unit = this.props.spreadUnit ?? '8h';
+    const mult = unit === 'APR' ? 3 * 365 : 1;
+    const d = new Date(s.now);
+    const clock = d.toISOString().slice(11, 19);
+    let list = s.coins.map(c => ({ c, d: this.derive(c) }))
+      .filter(({ c }) => s.market === 'All' || c.kind === s.market)
+      .filter(({ c }) => c.vol >= s.minVol)
+      .filter(({ c }) => !s.q || c.sym.toLowerCase().includes(s.q.toLowerCase()))
+      .filter(({ d }) => d.n >= 2)
+      .sort((a, b) => s.asc ? a.d.spread - b.d.spread : b.d.spread - a.d.spread);
+    const max = Math.max(...list.map(x => Math.max(Math.abs(x.d.lo), Math.abs(x.d.hi))), 0.01);
+    const accent = 'oklch(0.93 0.22 125)';
+    const fmtNext = m => { const mm = (m - Math.floor((s.now / 60000)) % 480 + 4800) % 480; return `${Math.floor(mm / 60)}h ${String(mm % 60).padStart(2, '0')}m`; };
+    const rows = list.map(({ c, d }, i) => {
+      const fl = s.flash[c.id];
+      return {
+        rank: String(i + 1).padStart(2, '0'), sym: c.sym, kind: c.kind, n: d.n + ' venues',
+        longEx: this.EX[d.li], shortEx: this.EX[d.hiI],
+        headline: unit === 'APR' ? (d.spread * mult).toFixed(1) + '%' : this.pct(d.spread),
+        flash: fl ? accent : '#eef7f0',
+        vol: this.money(c.vol), next: fmtNext(c.mins),
+        bg: s.sel === c.id ? '#133622' : 'transparent',
+        edge: s.sel === c.id ? `inset 2px 0 0 ${accent}` : 'none',
+        onClick: () => this.setState({ sel: c.id }),
+        cells: c.rates.map((r, j) => ({ bg: this.heat(r, max), ol: j === d.li || j === d.hiI ? `1px solid ${accent}` : 'none', t: `${this.EX[j]}: ${r == null ? '—' : this.pct(r)}` }))
+      };
+    });
+    const sc = s.coins[s.sel], sd = this.derive(sc);
+    const sel = {
+      sym: sc.sym, kind: sc.kind, longEx: this.EX[sd.li], shortEx: this.EX[sd.hiI],
+      longRate: this.pct(sd.lo), shortRate: this.pct(sd.hi), spread: this.pct(sd.spread),
+      apr: (sd.spread * 3 * 365).toFixed(1) + '%', daily: '$' + (sd.spread / 100 * 3 * 10000).toFixed(2), next: fmtNext(sc.mins),
+      venues: sc.rates.map((r, j) => ({ r, j })).filter(x => x.r != null).sort((a, b) => b.r - a.r)
+        .map(({ r, j }) => ({ name: this.EX[j], rate: this.pct(r), color: r >= 0 ? 'oklch(0.76 0.14 25)' : 'oklch(0.78 0.14 155)' }))
+    };
+    const opt = (cur, v) => cur === v;
+    return {
+      clock, showHeat, sel, rows,
+      cols: showHeat ? '28px 150px 200px 90px 80px 72px 245px' : '28px minmax(120px,1fr) minmax(160px,1.4fr) 100px 90px 80px',
+      tableMin: showHeat ? '1060px' : '700px',
+      spreadHead: (unit === 'APR' ? 'APR' : 'Spread') + (s.asc ? ' ↑' : ' ↓'),
+      sortSpread: () => this.setState({ asc: !s.asc }),
+      countTxt: `${rows.length} opportunities`,
+      q: s.q, onQ: e => this.setState({ q: e.target.value }),
+      markets: ['All', 'Crypto', 'RWA'].map(m => ({ label: m, bg: opt(s.market, m) ? '#215234' : 'transparent', color: opt(s.market, m) ? '#eef7f0' : '#a3c6af', onClick: () => this.setState({ market: m }) })),
+      vols: [[0, 'Any'], [1e5, '100K'], [1e6, '1M'], [1e7, '10M'], [1e8, '100M']].map(([v, l]) => ({ label: l, border: s.minVol === v ? accent : '#255a3a', color: s.minVol === v ? accent : '#a3c6af', onClick: () => this.setState({ minVol: v }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

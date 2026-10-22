@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Cpath d=%27M46 8 A42 42 0 0 0 46 92 Z%27 fill=%27%23ccff00%27 transform=%27translate(-4 4)%27/%3E%3Cpath d=%27M54 8 A42 42 0 0 1 54 92 Z%27 fill=%27%23ccff00%27 transform=%27translate(4 -4)%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b2416;color:#eef7f0;font-family:Geist,Helvetica,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#eef7f0;text-decoration:none}a:hover{color:oklch(0.93 0.22 125)}
+input{font:inherit}
+*::-webkit-scrollbar{height:8px;width:8px}*::-webkit-scrollbar-thumb{background:#255a3a;border-radius:4px}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;font-size:13px">
+  <header style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;padding:14px 24px;border-bottom:1px solid #1d4a30">
+    <a href="index.html" style="display:flex;align-items:center;gap:10px">
+      <svg width="22" height="22" viewBox="0 0 100 100"><path d="M46 8 A42 42 0 0 0 46 92 Z" fill="oklch(0.93 0.22 125)" transform="translate(-4 4)"></path><path d="M54 8 A42 42 0 0 1 54 92 Z" fill="oklch(0.93 0.22 125)" transform="translate(4 -4)"></path></svg>
+      <span style="font-weight:600;font-size:15px;letter-spacing:-0.01em">Orbzet</span>
+    </a>
+    <nav style="display:flex;gap:4px;flex-wrap:wrap">
+      <a href="overview.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Overview</a>
+      <a href="funding.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Funding Rates</a>
+      <a href="price-spread.html" style="padding:6px 10px;border-radius:6px;background:#173d27;color:#eef7f0">Price Spread</a>
+      <a href="funding-price.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Funding / Price</a>
+      <a href="backtest.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Backtest</a>
+      <a href="exchanges.html" style="padding:6px 10px;border-radius:6px;color:#a3c6af">Exchanges</a>
+    </nav>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;font-family:'Geist Mono',monospace;font-size:12px;color:#a3c6af">
+      <span style="width:7px;height:7px;border-radius:50%;background:oklch(0.78 0.14 155);box-shadow:0 0 0 3px oklch(0.78 0.14 155 / 0.18)"></span>
+      <span>LIVE · {{ clock }} UTC</span>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:12px 24px;border-bottom:1px solid #1d4a30">
+    <div style="display:flex;gap:2px;padding:2px;background:#10301e;border:1px solid #1d4a30;border-radius:7px">
+      <sc-for list="{{ markets }}" as="m" hint-placeholder-count="3">
+        <button onClick="{{ m.onClick }}" style="border:0;cursor:pointer;padding:5px 12px;border-radius:5px;font:inherit;font-size:12px;background:{{ m.bg }};color:{{ m.color }}">{{ m.label }}</button>
+      </sc-for>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="color:#93b9a1;font-size:12px">Min spread</span>
+      <div style="display:flex;gap:4px">
+        <sc-for list="{{ mins }}" as="v" hint-placeholder-count="4">
+          <button onClick="{{ v.onClick }}" style="cursor:pointer;padding:4px 9px;border-radius:5px;font-family:'Geist Mono',monospace;font-size:11px;border:1px solid {{ v.border }};background:transparent;color:{{ v.color }}">{{ v.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <input value="{{ q }}" onChange="{{ onQ }}" placeholder="Search coin" style="background:#10301e;border:1px solid #1d4a30;border-radius:6px;color:#eef7f0;padding:6px 10px;width:150px;outline:none;font-size:12px">
+    <div style="margin-left:auto;color:#93b9a1;font-size:12px;font-family:'Geist Mono',monospace">{{ countTxt }}</div>
+  </div>
+
+  <div style="overflow-x:auto;flex:1">
+    <div style="min-width:900px">
+      <div style="display:grid;grid-template-columns:28px 1fr 130px 110px 130px 110px 90px 90px;gap:14px;padding:10px 24px;color:#93b9a1;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid #1d4a30">
+        <span>#</span><span>Coin</span><span>Buy on</span><span style="text-align:right">Ask</span><span>Sell on</span><span style="text-align:right">Bid</span><span style="text-align:right">Spread</span><span style="text-align:right">Depth</span>
+      </div>
+      <sc-for list="{{ rows }}" as="r" hint-placeholder-count="16">
+        <div style="display:grid;grid-template-columns:28px 1fr 130px 110px 130px 110px 90px 90px;gap:14px;align-items:center;padding:9px 24px;border-bottom:1px solid #143823" style-hover="background:#133622">
+          <span style="color:#7aa58a;font-family:'Geist Mono',monospace;font-size:11px">{{ r.rank }}</span>
+          <div style="display:flex;align-items:baseline;gap:8px"><span style="font-weight:600">{{ r.sym }}</span><span style="color:#93b9a1;font-size:11px">{{ r.kind }}</span></div>
+          <span style="color:oklch(0.78 0.14 155);font-size:12px">{{ r.buyEx }}</span>
+          <span style="text-align:right;font-family:'Geist Mono',monospace;color:#d3e6d9">{{ r.ask }}</span>
+          <span style="color:oklch(0.76 0.14 25);font-size:12px">{{ r.sellEx }}</span>
+          <span style="text-align:right;font-family:'Geist Mono',monospace;color:#d3e6d9">{{ r.bid }}</span>
+          <span style="text-align:right;font-family:'Geist Mono',monospace;font-weight:500;color:{{ r.flash }}">{{ r.spread }}</span>
+          <span style="text-align:right;font-family:'Geist Mono',monospace;color:#a3c6af">{{ r.depth }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <footer style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;padding:12px 24px;border-top:1px solid #1d4a30;color:#7aa58a;font-size:11px">
+    <span>Spread = (best bid − best ask) / ask, before fees</span>
+    <span>Data is simulated for this mockup</span>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  EX = ['MEXC','Bitget','Gate.io','Phemex','BingX','Hyperliquid','Lighter','Lighter RH','Arcus','Bybit','Binance','Paradex','edgeX','GRVT','AsterDEX','Extended'];
+  constructor(p) {
+    super(p);
+    let seed = 23; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const defs = [['BTC',108400],['ETH',3920],['SOL',192],['DOGE',0.21],['XRP',2.41],['PEPE',0.0000102],['WIF',0.74],['SUI',3.12],['ENA',0.51],['HYPE',44],['ONDO',0.82],['TAO',412],['LINK',17.4],['AVAX',21.6],['JUP',0.41],['BONK',0.0000172]].map(d => [...d, 'Crypto']);
+    const rwa = [['TSLA',412],['NVDA',186],['XAU',4020],['SPY',668],['COIN',318],['HOOD',128]].map(d => [...d, 'RWA']);
+    const coins = [...defs, ...rwa].map(([sym, px, kind], id) => ({ id, sym, px, kind, depth: Math.pow(10, 4 + rnd() * 2.5), offs: this.EX.map(() => rnd() < 0.3 ? null : (rnd() - 0.5) * (0.002 + rnd() * 0.012)) }));
+    this.state = { coins, market: 'All', min: 0, q: '', now: Date.now(), flash: {} };
+  }
+  componentDidMount() {
+    this.t = setInterval(() => this.setState(s => {
+      const flash = {};
+      const coins = s.coins.map(c => { if (Math.random() > 0.3) return c; flash[c.id] = 1; return { ...c, offs: c.offs.map(o => o == null ? o : o + (Math.random() - 0.5) * 0.0015) }; });
+      return { coins, flash, now: Date.now() };
+    }), 1500);
+  }
+  componentWillUnmount() { clearInterval(this.t); }
+  fp(v) { return v >= 1000 ? v.toLocaleString('en-US', { maximumFractionDigits: 1 }) : v >= 1 ? v.toFixed(3) : v < 0.001 ? v.toPrecision(4) : v.toFixed(5); }
+  renderVals() {
+    const s = this.state, accent = 'oklch(0.93 0.22 125)';
+    const rows = s.coins.map(c => {
+      let lo = Infinity, hi = -Infinity, li = 0, hiI = 0;
+      c.offs.forEach((o, i) => { if (o == null) return; if (o < lo) { lo = o; li = i; } if (o > hi) { hi = o; hiI = i; } });
+      const ask = c.px * (1 + lo), bid = c.px * (1 + hi);
+      return { c, ask, bid, sp: (bid - ask) / ask * 100, li, hiI };
+    }).filter(x => s.market === 'All' || x.c.kind === s.market)
+      .filter(x => x.sp >= s.min)
+      .filter(x => !s.q || x.c.sym.toLowerCase().includes(s.q.toLowerCase()))
+      .sort((a, b) => b.sp - a.sp)
+      .map((x, i) => ({
+        rank: String(i + 1).padStart(2, '0'), sym: x.c.sym, kind: x.c.kind,
+        buyEx: this.EX[x.li], sellEx: this.EX[x.hiI], ask: this.fp(x.ask), bid: this.fp(x.bid),
+        spread: x.sp.toFixed(3) + '%', flash: s.flash[x.c.id] ? accent : '#eef7f0',
+        depth: '$' + (x.c.depth >= 1e6 ? (x.c.depth / 1e6).toFixed(1) + 'M' : Math.round(x.c.depth / 1e3) + 'K')
+      }));
+    return {
+      clock: new Date(s.now).toISOString().slice(11, 19), rows, countTxt: rows.length + ' pairs',
+      q: s.q, onQ: e => this.setState({ q: e.target.value }),
+      markets: ['All', 'Crypto', 'RWA'].map(m => ({ label: m, bg: s.market === m ? '#215234' : 'transparent', color: s.market === m ? '#eef7f0' : '#a3c6af', onClick: () => this.setState({ market: m }) })),
+      mins: [[0, 'Any'], [0.2, '0.2%'], [0.5, '0.5%'], [1, '1%']].map(([v, l]) => ({ label: l, border: s.min === v ? accent : '#255a3a', color: s.min === v ? accent : '#a3c6af', onClick: () => this.setState({ min: v }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>
